@@ -54,31 +54,31 @@ export default function AdminCertificatesPage() {
     setMessage('');
 
     const fileExt = form.file.name.split('.').pop();
-    const filePath = `${form.student_id}/${Date.now()}.${fileExt}`;
+    const filePath = form.student_id + '/' + Date.now() + '.' + fileExt;
 
-    const { error: uploadError } = await supabase.storage
+    const uploadResult = await supabase.storage
       .from('certificates')
       .upload(filePath, form.file);
 
-    if (uploadError) {
-      setMessage('Gagal upload file: ' + uploadError.message);
+    if (uploadResult.error) {
+      setMessage('Gagal upload file: ' + uploadResult.error.message);
       setSaving(false);
       return;
     }
 
-    const { data: sessionData } = await supabase.auth.getSession();
+    const sessionResult = await supabase.auth.getSession();
 
-    const { error } = await supabase.from('certificates').insert({
+    const insertResult = await supabase.from('certificates').insert({
       student_id: form.student_id,
       semester: form.semester,
       level: form.level || null,
       title: form.title,
       file_path: filePath,
-      uploaded_by: sessionData.session.user.id,
+      uploaded_by: sessionResult.data.session.user.id,
     });
 
-    if (error) {
-      setMessage('Gagal menyimpan: ' + error.message);
+    if (insertResult.error) {
+      setMessage('Gagal menyimpan: ' + insertResult.error.message);
     } else {
       setMessage('Sertifikat berhasil diunggah.');
       setForm({ student_id: '', semester: '', level: '', title: '', file: null });
@@ -95,11 +95,11 @@ export default function AdminCertificatesPage() {
   }
 
   async function handleView(path) {
-    const { data, error } = await supabase.storage
+    const result = await supabase.storage
       .from('certificates')
-      .createSignedUrl(path, 60 * 5);
-    if (!error && data?.signedUrl) {
-      window.open(data.signedUrl, '_blank');
+      .createSignedUrl(path, 300);
+    if (!result.error && result.data && result.data.signedUrl) {
+      window.open(result.data.signedUrl, '_blank');
     }
   }
 
@@ -153,4 +153,52 @@ export default function AdminCertificatesPage() {
           required
           placeholder="Judul sertifikat"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm"
+        />
+
+        <div>
+          <label className="block text-sm font-medium mb-1">File sertifikat (PDF/gambar)</label>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            onChange={(e) => setForm({ ...form, file: e.target.files[0] || null })}
+            className="w-full text-sm"
+          />
+        </div>
+
+        {message && <p className="text-sm text-clay">{message}</p>}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full bg-pine hover:bg-pineDark text-white rounded-lg py-2 text-sm font-medium disabled:opacity-60"
+        >
+          {saving ? 'Mengunggah...' : 'Unggah Sertifikat'}
+        </button>
+      </form>
+
+      <p className="font-medium text-sm mb-2">Daftar sertifikat</p>
+      {certificates.length === 0 && <p className="text-sm text-ink/60">Belum ada sertifikat.</p>}
+      <div className="space-y-2">
+        {certificates.map((c) => (
+          <div key={c.id} className="bg-white rounded-xl border border-black/5 shadow-sm p-4">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs text-pine/70">{c.semester} - {c.profiles ? c.profiles.full_name : ''}</p>
+                <p className="font-medium">{c.title}</p>
+                {c.level && <p className="text-xs text-mustard font-medium mt-0.5">Level {c.level}</p>}
+              </div>
+              <button onClick={() => handleDelete(c.id, c.file_path)} className="text-clay text-sm underline underline-offset-2">
+                Hapus
+              </button>
+            </div>
+            <button onClick={() => handleView(c.file_path)} className="text-sm text-pine underline underline-offset-2 mt-1">
+              Lihat file
+            </button>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
