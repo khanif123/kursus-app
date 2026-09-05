@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panduan Setup — Aplikasi Kursus</title>
+<style>
+  :root {
+    --pine: #1F4B43;
+    --pineDark: #153731;
+    --mustard: #D9A441;
+    --clay: #B8563F;
+    --canvas: #F7F6F2;
+    --ink: #22201D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 24px 18px 60px; }
+  header { text-align: center; margin-bottom: 24px; }
+  header p.eyebrow { color: var(--pine); font-size: 13px; margin: 0 0 4px; }
+  header h1 {
+    font-size: 22px; margin: 0; color: var(--pineDark);
+  }
+  .progress-bar {
+    height: 6px; background: #e5e2da; border-radius: 999px; overflow: hidden;
+    margin-top: 16px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--pine); width: 0%; transition: width .3s;
+  }
+  .progress-label { font-size: 12px; color: #6b6659; text-align: center; margin-top: 6px; }
+
+  .step {
+    background: white; border: 1px solid rgba(0,0,0,.06); border-radius: 14px;
+    padding: 18px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    transition: opacity .2s;
+  }
+  .step.done { opacity: 0.55; }
+  .step-head { display: flex; align-items: flex-start; gap: 12px; }
+  .step-num {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--pine); color: white; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step.done .step-num { background: #9a9585; }
+  .step-title { font-weight: 600; font-size: 15px; margin: 0 0 4px; }
+  .step-desc { font-size: 13.5px; color: #55503f; margin: 0 0 12px; }
+  .step-actions { display: flex; flex-direction: column; gap: 8px; margin-left: 38px; }
+
+  .btn {
+    display: block; text-align: center; text-decoration: none;
+    border-radius: 10px; padding: 11px 14px; font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer; width: 100%;
+  }
+  .btn-primary { background: var(--pine); color: white; }
+  .btn-primary:active { background: var(--pineDark); }
+  .btn-secondary { background: var(--mustard); color: #2b2005; }
+  .btn-outline {
+    background: white; color: var(--pine); border: 1.5px solid var(--pine);
+  }
+  .btn-check {
+    background: transparent; color: #6b6659; border: 1px solid #d8d3c6;
+    font-weight: 500;
+  }
+  .btn-check.checked { background: var(--pine); color: white; border-color: var(--pine); }
+  .copied-msg {
+    font-size: 12px; color: var(--pine); text-align: center; margin-top: -2px;
+    min-height: 16px;
+  }
+
+  footer { text-align: center; font-size: 12.5px; color: #8a8574; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Panduan Setup</p>
+    <h1>Aplikasi Kursus Bahasa Inggris</h1>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <p class="progress-label" id="progressLabel">0 dari 10 langkah selesai</p>
+  </header>
+
+  <!-- STEP 1 -->
+  <div class="step" data-step="1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <p class="step-title">Buat akun Supabase</p>
+        <p class="step-desc">Ini database gratis untuk aplikasi kamu. Daftar pakai email atau GitHub.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <a class="btn btn-primary" href="https://supabase.com" target="_blank" rel="noopener">Buka Supabase</a>
+      <button class="btn btn-check" onclick="toggleStep(1)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" data-step="2">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <p class="step-title">Buat project baru</p>
+        <p class="step-desc">Di dashboard Supabase, klik "New Project". Isi nama bebas, buat password database, pilih region terdekat (contoh: Singapore). Tunggu 1-2 menit.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-check" onclick="toggleStep(2)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" data-step="3">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div>
+        <p class="step-title">Salin kode database</p>
+        <p class="step-desc">Klik tombol di bawah untuk menyalin kode. Lalu di Supabase, buka "SQL Editor" → "New query", tempel (paste) kodenya, klik "Run".</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-secondary" onclick="copyText('sql1', this)">Salin Kode Database</button>
+      <p class="copied-msg" id="msg-sql1"></p>
+      <button class="btn btn-check" onclick="toggleStep(3)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" data-step="4">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div>
+        <p class="step-title">Salin kode Panel Admin</p>
+        <p class="step-desc">Sama seperti sebelumnya: salin, buka "SQL Editor" → "New query" lagi, tempel, klik "Run".</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-secondary" onclick="copyText('sql2', this)">Salin Kode Panel Admin</button>
+      <p class="copied-msg" id="msg-sql2"></p>
+      <button class="btn btn-check" onclick="toggleStep(4)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" data-step="5">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div>
+        <p class="step-title">Catat kunci API</p>
+        <p class="step-desc">Di Supabase, buka "Project Settings" (ikon gear) → "API". Catat/screenshot dua hal: "Project URL" dan "anon public key". Nanti dibutuhkan di langkah 8.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-check" onclick="toggleStep(5)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" data-step="6">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div>
+        <p class="step-title">Buat repository GitHub</p>
+        <p class="step-desc">Buat repository baru (nama bebas), lalu upload semua file dari folder "kursus-app" ke situ.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <a class="btn btn-primary" href="https://github.com/new" target="_blank" rel="noopener">Buka GitHub — Buat Repo</a>
+      <button class="btn btn-check" onclick="toggleStep(6)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step" data-step="7">
+    <div class="step-head">
+      <div class="step-num">7</div>
+      <div>
+        <p class="step-title">Buat akun Vercel</p>
+        <p class="step-desc">Daftar gratis, paling gampang pakai akun GitHub yang sama.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <a class="btn btn-primary" href="https://vercel.com/new" target="_blank" rel="noopener">Buka Vercel</a>
+      <button class="btn btn-check" onclick="toggleStep(7)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step" data-step="8">
+    <div class="step-head">
+      <div class="step-num">8</div>
+      <div>
+        <p class="step-title">Deploy aplikasi</p>
+        <p class="step-desc">Di Vercel, klik "Add New → Project", pilih repository GitHub kamu. Sebelum klik Deploy, buka "Environment Variables" dan tambahkan 2 baris:<br>
+        <code>NEXT_PUBLIC_SUPABASE_URL</code> = Project URL dari langkah 5<br>
+        <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> = anon public key dari langkah 5<br>
+        Lalu klik "Deploy". Tunggu 1-2 menit sampai online.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-check" onclick="toggleStep(8)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 9 -->
+  <div class="step" data-step="9">
+    <div class="step-head">
+      <div class="step-num">9</div>
+      <div>
+        <p class="step-title">Daftar akun untuk dirimu sendiri</p>
+        <p class="step-desc">Buka link aplikasi kamu yang sudah online (dari Vercel), klik "Daftar di sini", buat akun pakai email kamu.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-check" onclick="toggleStep(9)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <!-- STEP 10 -->
+  <div class="step" data-step="10">
+    <div class="step-head">
+      <div class="step-num">10</div>
+      <div>
+        <p class="step-title">Jadikan dirimu Super Admin</p>
+        <p class="step-desc">Di Supabase → "Table Editor" → tabel "profiles". Cari baris dengan namamu, ubah kolom "role" jadi <code>super_admin</code>, simpan. Login ulang ke aplikasi — tombol "Buka Panel Admin" akan muncul.<br><br>
+        <strong>Ini langkah manual terakhir.</strong> Setelah ini, semua dikerjakan langsung dari website.</p>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-check" onclick="toggleStep(10)">Sudah selesai</button>
+    </div>
+  </div>
+
+  <footer>Selesai semua? Bagikan link aplikasi kamu ke guru & siswa 🎉</footer>
+</div>
+
+<textarea id="sql1" style="position:absolute; left:-9999px;">-- =========================================================
+-- SKEMA DATABASE - APLIKASI KURSUS BAHASA INGGRIS
+-- =========================================================
+
+create table profiles (
+  id uuid references auth.users on delete cascade primary key,
+  full_name text not null,
+  role text not null check (role in ('admin', 'teacher', 'student')),
+  phone text,
+  created_at timestamp with time zone default now()
+);
+
+create table classes (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  level text,
+  teacher_id uuid references profiles(id),
+  location_lat double precision,
+  location_lng double precision,
+  radius_meters int default 150,
+  created_at timestamp with time zone default now()
+);
+
+create table enrollments (
+  id uuid default gen_random_uuid() primary key,
+  class_id uuid references classes(id) on delete cascade,
+  student_id uuid references profiles(id) on delete cascade,
+  created_at timestamp with time zone default now(),
+  unique(class_id, student_id)
+);
+
+create table schedules (
+  id uuid default gen_random_uuid() primary key,
+  class_id uuid references classes(id) on delete cascade,
+  session_date date not null,
+  start_time time not null,
+  end_time time not null,
+  created_at timestamp with time zone default now()
+);
+
+create table attendance (
+  id uuid default gen_random_uuid() primary key,
+  schedule_id uuid references schedules(id) on delete cascade,
+  user_id uuid references profiles(id) on delete cascade,
+  status text default 'hadir' check (status in ('hadir', 'terlambat', 'izin', 'alpa')),
+  checked_at timestamp with time zone default now(),
+  lat double precision,
+  lng double precision,
+  distance_meters double precision,
+  unique(schedule_id, user_id)
+);
+
+create table materials (
+  id uuid default gen_random_uuid() primary key,
+  class_id uuid references classes(id) on delete cascade,
+  title text not null,
+  description text,
+  file_url text,
+  link_url text,
+  created_at timestamp with time zone default now()
+);
+
+create table progress (
+  id uuid default gen_random_uuid() primary key,
+  student_id uuid references profiles(id) on delete cascade,
+  class_id uuid references classes(id) on delete cascade,
+  score numeric,
+  note text,
+  created_at timestamp with time zone default now()
+);
+
+alter table profiles enable row level security;
+alter table classes enable row level security;
+alter table enrollments enable row level security;
+alter table schedules enable row level security;
+alter table attendance enable row level security;
+alter table materials enable row level security;
+alter table progress enable row level security;
+
+create policy "read_all_profiles" on profiles for select using (auth.role() = 'authenticated');
+create policy "read_all_classes" on classes for select using (auth.role() = 'authenticated');
+create policy "read_all_enrollments" on enrollments for select using (auth.role() = 'authenticated');
+create policy "read_all_schedules" on schedules for select using (auth.role() = 'authenticated');
+create policy "read_all_materials" on materials for select using (auth.role() = 'authenticated');
+create policy "read_all_progress" on progress for select using (auth.role() = 'authenticated');
+
+create policy "read_all_attendance" on attendance for select using (auth.role() = 'authenticated');
+create policy "insert_own_attendance" on attendance for insert with check (auth.uid() = user_id);
+
+create policy "update_own_profile" on profiles for update using (auth.uid() = id);
+create policy "insert_own_profile" on profiles for insert with check (auth.uid() = id);
+</textarea>
+
+<textarea id="sql2" style="position:absolute; left:-9999px;">-- =========================================================
+-- TAMBAHAN IZIN UNTUK ADMIN & SUPER ADMIN
+-- Jalankan file ini SETELAH kode database (langkah 3)
+-- =========================================================
+
+alter table profiles drop constraint if exists profiles_role_check;
+alter table profiles add constraint profiles_role_check
+  check (role in ('super_admin', 'admin', 'teacher', 'student'));
+
+create or replace function is_admin()
+returns boolean as $$
+  select exists (
+    select 1 from profiles
+    where id = auth.uid() and role in ('admin', 'super_admin')
+  );
+$$ language sql security definer;
+
+create or replace function teaches_class(class_id_input uuid)
+returns boolean as $$
+  select exists (
+    select 1 from classes
+    where id = class_id_input and teacher_id = auth.uid()
+  );
+$$ language sql security definer;
+
+create policy "admin_write_classes" on classes for insert with check (is_admin());
+create policy "admin_update_classes" on classes for update using (is_admin());
+create policy "admin_delete_classes" on classes for delete using (is_admin());
+
+create policy "admin_or_teacher_write_schedules" on schedules for insert
+  with check (is_admin() or teaches_class(class_id));
+create policy "admin_or_teacher_update_schedules" on schedules for update
+  using (is_admin() or teaches_class(class_id));
+create policy "admin_or_teacher_delete_schedules" on schedules for delete
+  using (is_admin() or teaches_class(class_id));
+
+create policy "admin_write_enrollments" on enrollments for insert with check (is_admin());
+create policy "admin_delete_enrollments" on enrollments for delete using (is_admin());
+
+create policy "admin_or_teacher_write_materials" on materials for insert
+  with check (is_admin() or teaches_class(class_id));
+create policy "admin_or_teacher_update_materials" on materials for update
+  using (is_admin() or teaches_class(class_id));
+create policy "admin_or_teacher_delete_materials" on materials for delete
+  using (is_admin() or teaches_class(class_id));
+
+create policy "admin_or_teacher_write_progress" on progress for insert
+  with check (is_admin() or teaches_class(class_id));
+create policy "admin_or_teacher_update_progress" on progress for update
+  using (is_admin() or teaches_class(class_id));
+
+create policy "super_admin_update_any_profile" on profiles for update
+  using (
+    exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'super_admin')
+  );
+
+create or replace function prevent_role_self_escalation()
+returns trigger as $$
+begin
+  if new.role <> old.role then
+    if not exists (
+      select 1 from profiles where id = auth.uid() and role = 'super_admin'
+    ) then
+      raise exception 'Hanya super admin yang boleh mengubah peran (role) pengguna.';
+    end if;
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists trg_prevent_role_escalation on profiles;
+create trigger trg_prevent_role_escalation
+  before update on profiles
+  for each row execute function prevent_role_self_escalation();
+
+drop policy if exists "insert_own_profile" on profiles;
+create policy "insert_own_profile" on profiles for insert
+  with check (auth.uid() = id and role in ('teacher', 'student'));
+</textarea>
+
+<script>
+  const TOTAL_STEPS = 10;
+
+  function updateProgress() {
+    const done = document.querySelectorAll('.step.done').length;
+    document.getElementById('progressFill').style.width = (done / TOTAL_STEPS * 100) + '%';
+    document.getElementById('progressLabel').textContent = done + ' dari ' + TOTAL_STEPS + ' langkah selesai';
+  }
+
+  function toggleStep(n) {
+    const el = document.querySelector('.step[data-step="' + n + '"]');
+    const btn = el.querySelector('.btn-check');
+    el.classList.toggle('done');
+    btn.classList.toggle('checked');
+    btn.textContent = el.classList.contains('done') ? 'Sudah selesai ✓' : 'Sudah selesai';
+    updateProgress();
+  }
+
+  function copyText(elId, btn) {
+    const ta = document.getElementById(elId);
+    ta.style.position = 'static';
+    ta.select();
+    ta.setSelectionRange(0, 999999);
+    try {
+      document.execCommand('copy');
+    } catch (e) {
+      navigator.clipboard && navigator.clipboard.writeText(ta.value);
+    }
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+
+    const msgId = 'msg-' + elId;
+    const msg = document.getElementById(msgId);
+    msg.textContent = 'Berhasil disalin ✓ Sekarang tempel di Supabase SQL Editor.';
+    setTimeout(() => { msg.textContent = ''; }, 4000);
+  }
+</script>
+
+</body>
+</html>
