@@ -11,6 +11,9 @@ export default function AdminNav({ role }) {
     { href: '/admin/schedules', label: 'Jadwal', roles: ['admin', 'super_admin', 'teacher'] },
     { href: '/admin/enrollments', label: 'Daftarkan Siswa', roles: ['admin', 'super_admin'] },
     { href: '/admin/materials', label: 'Materi', roles: ['admin', 'super_admin', 'teacher'] },
+    { href: '/admin/grades', label: 'Nilai', roles: ['admin', 'super_admin', 'teacher'] },
+    { href: '/admin/payments', label: 'Pembayaran', roles: ['admin', 'super_admin'] },
+    { href: '/admin/certificates', label: 'Sertifikat', roles: ['admin', 'super_admin'] },
     { href: '/admin/users', label: 'Pengguna', roles: ['super_admin'] },
   ];
 
