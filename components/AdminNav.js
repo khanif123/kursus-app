@@ -1,12 +1,11 @@
 'use client';
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function AdminNav({ role }) {
   const pathname = usePathname();
-
   const links = [
+    { href: '/attendance', label: 'Absensi', roles: ['admin', 'super_admin', 'teacher', 'student'] },
     { href: '/admin/classes', label: 'Kelas', roles: ['admin', 'super_admin'] },
     { href: '/admin/schedules', label: 'Jadwal', roles: ['admin', 'super_admin', 'teacher'] },
     { href: '/admin/enrollments', label: 'Daftarkan Siswa', roles: ['admin', 'super_admin'] },
@@ -16,9 +15,7 @@ export default function AdminNav({ role }) {
     { href: '/admin/certificates', label: 'Sertifikat', roles: ['admin', 'super_admin'] },
     { href: '/admin/users', label: 'Pengguna', roles: ['super_admin'] },
   ];
-
   const visible = links.filter((l) => l.roles.includes(role));
-
   return (
     <nav className="flex gap-2 overflow-x-auto pb-2 mb-6 -mx-6 px-6">
       {visible.map((l) => (
